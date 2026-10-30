@@ -1,9 +1,23 @@
-# Café Ruta 27 — Dashboard de ventas en Excel
+# Café Ruta 27
 
-**Archivo original de Excel:** pendiente de carga en `workbook/Cafe_Ruta_27_Dashboard.xlsx`.
+Dashboard académico de ventas y cumplimiento de metas en Microsoft Excel, con datos simulados.
 
-Libro con hojas `Dashboard`, `Datos` y `Tabla_Dinamica`. Presenta una propuesta de seguimiento de ventas y metas, con segmentación por vendedor, tienda/canal y año. Permite observar el cumplimiento de metas y comparar resultados por producto o vendedor.
+## Objetivo
 
-**Cómo usarlo:** descarga el archivo y ábrelo en Excel de escritorio. Revisa sus filtros y resultados; las funciones, gráficos y comportamientos interactivos pueden verse distintos en previsualizadores de GitHub.
+Comparar ventas y metas, identificar resultados por vendedor y analizar el desempeño por producto, tienda o canal y año.
 
-**Herramientas:** Microsoft Excel. **Datos:** ejemplo académico; no se afirma que correspondan a ventas reales.
+## Contenido del libro
+
+- `Dashboard`: indicadores, gráficos y filtros de consulta.
+- `Datos`: registros utilizados por el panel.
+- `Tabla_Dinamica`: cálculos y resúmenes que alimentan los indicadores.
+
+## Funcionalidades
+
+- Indicadores de ventas totales, metas y porcentaje de cumplimiento.
+- Comparación de vendedores y productos.
+- Filtros por vendedor, tienda o canal y año.
+
+## Archivo
+
+El libro original `workbook/Cafe_Ruta_27_Dashboard.xlsx` está pendiente de carga en este repositorio.

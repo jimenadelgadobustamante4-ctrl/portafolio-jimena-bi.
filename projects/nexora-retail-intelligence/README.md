@@ -1,23 +1,26 @@
-# NEXORA — Retail Intelligence
+# NEXORA Retail Intelligence
 
-**Caso de consultoría BI basado en datos sintéticos.**
+Caso académico de Business Intelligence con datos simulados de una cadena minorista de Costa Rica.
 
 ## Objetivo
-Entender ventas, rentabilidad, devoluciones y cumplimiento de metas en 8 tiendas ficticias de Costa Rica. Incluye 4.200 registros transaccionales, tablas de productos y tiendas, y metas mensuales.
 
-## Estructura
-- `data/`: archivos CSV de ejemplo.
-- `power-query/PowerQuery_M.txt`: consultas M para limpiar, tipar y enriquecer los datos.
-- `dax/Medidas_DAX.txt`: calendario y medidas analíticas.
-- `01_LEEME_PROYECTO.md`: instrucciones originales detalladas.
-- `04_Diseno_Dashboard.md`: especificación visual.
-- `05_Presentacion_Entrevista.md`: guion de presentación.
+Analizar ventas, rentabilidad, devoluciones y cumplimiento de metas en 8 tiendas mediante un modelo de datos y métricas de negocio. El conjunto de datos incluye 4.200 registros transaccionales, información de productos y tiendas, y metas mensuales.
 
-## Demostración reproducible
-1. Descarga los CSV.
-2. En Power BI Desktop, crea el parámetro `pRuta` apuntando a `data/` con barra final.
-3. Crea una consulta por bloque de `power-query/PowerQuery_M.txt`.
-4. Configura relaciones y medidas de `dax/Medidas_DAX.txt` conforme a las instrucciones.
-5. Crea las páginas, valida totales, guarda tu `.pbix` y añade capturas reales.
+## Archivos
 
-**Estado:** kit de datos, consultas, DAX y especificación; el reporte `.pbix` no está incluido ni se declara terminado.
+- [Datos CSV](data/)
+- [Consultas de Power Query](power-query/PowerQuery_M.txt)
+- [Calendario y medidas DAX](dax/Medidas_DAX.txt)
+- [Modelo e implementación](01_LEEME_PROYECTO.md)
+- [Especificación del dashboard](04_Diseno_Dashboard.md)
+
+## Componentes técnicos
+
+- Preparación y estandarización de datos con Power Query y lenguaje M.
+- Modelo estrella con tablas de hechos y dimensiones.
+- Medidas DAX de ventas netas, utilidad, margen, devoluciones y cumplimiento.
+- Especificación de vistas ejecutivas, de rentabilidad y de operaciones.
+
+## Estado
+
+Se incluyen los datos, las consultas, las medidas y la especificación técnica. El archivo de reporte de Power BI (`.pbix`) no está incluido.

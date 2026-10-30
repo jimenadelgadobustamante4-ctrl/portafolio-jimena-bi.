@@ -1,4 +1,4 @@
-# Guía visual — NEXORA Retail Intelligence
+# Especificación del dashboard de NEXORA
 
 **Formato**: 16:9, 1280 × 720 px. Colores: fondo `#0B1220`, tarjetas `#162238`, azul `#38BDF8`, turquesa `#2DD4BF`, texto `#F8FAFC`, gris secundario `#A8B3C7`, advertencia `#F59E0B`. Tipografía Aptos/Segoe UI.
 
@@ -34,10 +34,3 @@ KPIs: pedidos completados, pedidos devueltos, tasa de devolución %, ticket prom
 - Crear tooltip dedicado "Detalle del producto".
 - Usar etiquetas breves (`₡1,2 M`, `23,4 %`), no saturar de gráficos circulares ni texto.
 - Agregar un pie de página: "Datos simulados | Proyecto demostrativo de BI | Corte: septiembre 2026".
-
-## Entregables que se deben capturar
-1. Portada ejecutiva.
-2. Página de rentabilidad.
-3. Página operaciones.
-4. Vista de modelo, mostrando 4 relaciones.
-5. Panel Power Query con limpieza y columnas calculadas.

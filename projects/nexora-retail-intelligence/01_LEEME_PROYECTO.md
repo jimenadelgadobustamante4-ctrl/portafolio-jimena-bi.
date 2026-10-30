@@ -1,52 +1,53 @@
-# NEXORA | Retail Intelligence
-## Caso de consultoría BI · Power BI Desktop + Power Query + DAX
+# Modelo e implementación de NEXORA
 
-**Propósito:** mostrar competencias técnicas y pensamiento de negocio para un puesto de Consultor(a) Junior de Business Intelligence.
+## Necesidad de negocio
 
-**Aviso ético:** empresa, tiendas, clientes, pedidos, precios y metas son **datos sintéticos** creados para este ejercicio. No presentarlos como cifras reales de una empresa.
+NEXORA es una cadena minorista ficticia con 8 tiendas en Costa Rica y canales físicos y digitales. El caso plantea centralizar los resultados comerciales para analizar rentabilidad, identificar tiendas y categorías que requieren atención, comparar ventas con metas y estudiar las devoluciones.
 
-### El reto del cliente
-NEXORA, una cadena minorista ficticia con 8 tiendas en Costa Rica y canales físicos/digitales, no tiene un panel unificado de resultados. La dirección necesita ver dónde gana dinero, qué tiendas y categorías requieren atención, si alcanza sus metas y si las devoluciones erosionan la rentabilidad.
+Empresa, transacciones, productos y metas corresponden a un ejercicio con datos simulados.
 
-### Qué contiene el paquete
-- `FactVentas_RAW.csv`: 4.200 registros de 2024-01-01 a 2026-09-30 con inconsistencias reales de texto (espacios, mayúsculas, etiquetas).
-- `DimProductos.csv`: 20 productos y 4 categorías.
-- `DimTiendas.csv`: 8 tiendas y 4 provincias adicionales a San José, segmentadas por región.
-- `FactMetasMensuales.csv`: 264 metas de tienda/mes.
-- `02_PowerQuery_M.txt`: limpieza, estandarización, tipado, cálculos de importes y desduplicación.
-- `03_Medidas_DAX.txt`: modelo calendario y medidas de ventas, rentabilidad, devoluciones, comparación interanual, metas y alertas.
-- `04_Diseno_Dashboard.md`: layout detallado de 3 páginas.
-- `05_Presentacion_Entrevista.md`: discurso de portafolio y validación de calidad.
+## Fuentes de datos
 
-### Construcción en Power BI Desktop (paso a paso)
-1. Descomprime los CSV en una carpeta local, por ejemplo `C:\BI\NEXORA_BI\`.
-2. En **Transformar datos > Administrar parámetros**, crea `pRuta` de tipo Texto con el valor de esa carpeta terminando en `\`.
-3. En Power Query, **Nueva fuente > Consulta en blanco > Editor avanzado**, pega cada bloque M de `02_PowerQuery_M.txt` en una consulta diferente, respetando los nombres indicados. **No pegues el archivo completo como una sola consulta.**
-4. **Cerrar y aplicar**. Comprueba que FactVentas tenga 4.200 filas, 20 productos, 8 tiendas y 264 metas.
-5. En **Modelado**, crea la tabla DimFecha y establece las cuatro relaciones especificadas en `03_Medidas_DAX.txt`, siempre con filtrado **unidireccional** de dimensión a hechos.
-6. Crea las medidas DAX individualmente. Nota: `FactMetas` **no** debe conectarse por YearMonth con DimFecha, ya que un mes se repite a diario; la medida `Meta Ventas CRC` utiliza TREATAS para respetar el filtro de meses.
-7. Ajusta moneda CRC, porcentajes y tema visual. Diseña las páginas según `04_Diseno_Dashboard.md`.
-8. Crea medidas en una tabla dedicada opcional `Medidas = {0}` y oculta la columna Value, o guárdalas en FactVentas.
-9. Verifica que los filtros entre páginas funcionen, que 2024 no muestre crecimiento interanual y que los ingresos netos resten devoluciones. Evita comparaciones YoY con periodos parciales no equivalentes.
-10. Guarda como **NEXORA_Retail_Intelligence.pbix** desde Power BI Desktop y toma capturas del dashboard y del modelo para tu portafolio.
+- [FactVentas_RAW.csv](data/FactVentas_RAW.csv): 4.200 registros transaccionales entre enero de 2024 y septiembre de 2026, con inconsistencias de texto para su preparación.
+- [DimProductos.csv](data/DimProductos.csv): 20 productos y 4 categorías.
+- [DimTiendas.csv](data/DimTiendas.csv): información de las 8 tiendas.
+- [FactMetasMensuales.csv](data/FactMetasMensuales.csv): 264 metas por tienda y mes.
 
-### Arquitectura y decisiones
-Modelo estrella: FactVentas es la tabla transaccional; DimTiendas, DimProductos y DimFecha filtran sus análisis. FactMetas es una segunda tabla de hechos a granularidad de tienda-mes, conectada con DimTiendas y filtrada temporalmente mediante TREATAS.
+## Implementación en Power BI Desktop
 
-**Definiciones de indicadores:**
-- Ventas netas: pedidos completados descontando importe de devoluciones, excluyendo cancelaciones.
-- Utilidad: ventas netas menos costo neto, descontando el costo correspondiente a devoluciones.
-- Margen: utilidad / ventas netas.
-- Tasa de devoluciones: pedidos devueltos / (completados + devueltos).
-- Cumplimiento: ventas netas / meta del periodo y tiendas seleccionados.
+1. Descarga los archivos de [data/](data/) en una carpeta local.
+2. Crea el parámetro de texto `pRuta` con la ruta de esa carpeta y su separador final.
+3. En Power Query, crea una consulta en blanco por cada bloque de [PowerQuery_M.txt](power-query/PowerQuery_M.txt), respetando los nombres indicados.
+4. Aplica las transformaciones y comprueba los recuentos de ventas, productos, tiendas y metas.
+5. Crea el calendario y las relaciones descritas en [Medidas_DAX.txt](dax/Medidas_DAX.txt), con filtrado unidireccional de dimensiones a hechos.
+6. Incorpora las medidas DAX individualmente y configura los formatos monetarios y porcentuales.
+7. Construye las páginas de acuerdo con la [especificación visual](04_Diseno_Dashboard.md).
+8. Valida los filtros, los importes de devoluciones y las comparaciones entre periodos equivalentes.
 
-**Límites:** el caso presupone devoluciones completas, sin devoluciones parciales; cada venta representa un artículo/pedido. No se modelan impuestos, envíos ni costes operativos. Las metas son una planificación simulada e independientes de las ventas generadas.
+## Arquitectura
 
-### Valor que demuestra al reclutador
-Ingesta de datos, calidad y transformación (M), esquema estrella, DAX, métricas de negocio, segmentaciones, storytelling, priorización de oportunidades y comunicación ejecutiva.
+El modelo utiliza `FactVentas` como tabla transaccional. `DimTiendas`, `DimProductos` y `DimFecha` actúan como dimensiones.
 
-### Buenas prácticas y referencia
-https://learn.microsoft.com/es-es/power-bi/guidance/star-schema
-https://learn.microsoft.com/en-us/power-bi/guidance/power-query-folding
+`FactMetas` contiene las metas con granularidad de tienda y mes. Se relaciona con `DimTiendas`; la medida `Meta Ventas CRC` aplica el filtro de meses mediante `TREATAS`. No se conecta directamente `YearMonth` con el calendario diario.
 
-> Los CSV no tienen motor SQL: no esperes query folding en estas fuentes; para escalar a producción se recomienda SQL Server/warehouse y preparación optimizada en origen.
+## Indicadores
+
+- **Ventas netas:** pedidos completados menos devoluciones, excluyendo cancelaciones.
+- **Utilidad:** ventas netas menos costo neto, descontando el costo de las devoluciones.
+- **Margen:** utilidad dividida entre ventas netas.
+- **Tasa de devoluciones:** pedidos devueltos entre pedidos completados y devueltos.
+- **Cumplimiento de metas:** ventas netas entre la meta del periodo y las tiendas seleccionadas.
+
+## Criterios de validación
+
+- Comprobar los recuentos de registros y las claves de relación.
+- Revisar valores nulos, duplicados y categorías antes y después de la preparación.
+- Contrastar totales y medidas con cálculos manuales.
+- Revisar los filtros por mes y tienda, las devoluciones y los márgenes negativos.
+- Evitar comparaciones interanuales entre periodos parciales no equivalentes.
+
+## Alcance
+
+El caso contempla devoluciones completas y una fila por artículo o pedido. No modela impuestos, envíos ni costos operativos. Las metas son una planificación simulada independiente de las ventas generadas.
+
+Las fuentes CSV no permiten query folding. El repositorio contiene el material técnico de implementación; el reporte `.pbix` no está incluido.

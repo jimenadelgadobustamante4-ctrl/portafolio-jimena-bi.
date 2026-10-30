@@ -1,19 +1,23 @@
-# Base de datos musical — SQL Server
+# Base de datos musical
 
-**Script:** [`EntregaFinal.sql`](sql/EntregaFinal.sql)
+Proyecto académico de bases de datos relacionales en SQL Server y T-SQL.
 
-Proyecto de modelado relacional para una aplicación de música. Incluye entidades como usuarios, artistas, géneros, álbumes, canciones y playlists, con tablas puente para relaciones muchos-a-muchos.
+## Objetivo
 
-## Conceptos demostrados
-- Definición de tablas y tipos de datos con `CREATE TABLE`.
-- Llaves primarias y llaves foráneas.
-- Restricciones como `UNIQUE` y `CHECK`.
-- Inserción de registros de ejemplo y estructura relacional.
+Organizar usuarios, artistas, géneros, álbumes, canciones y playlists, incluyendo relaciones entre canciones y artistas y entre playlists y canciones.
 
-## Ejecución segura
-1. Crea una **base de datos nueva y exclusivamente de pruebas** en SQL Server.
-2. Abre el script en SQL Server Management Studio o Azure Data Studio.
-3. Revisa el script antes de ejecutarlo: **contiene sentencias `DROP TABLE`**, que eliminan tablas existentes con esos nombres.
-4. Ejecuta sobre la base de pruebas únicamente.
+## Implementación
 
-No ejecutes este script en bases productivas ni en una base que contenga información que deseas conservar.
+- Creación de tablas y tipos de datos con `CREATE TABLE`.
+- Claves primarias, claves foráneas y tablas de relación.
+- Restricciones `UNIQUE` y `CHECK`.
+- Inserción de registros de ejemplo.
+- Consultas con `INNER JOIN`, `LEFT JOIN`, `GROUP BY`, agregaciones, filtros y ordenamiento.
+
+## Archivo
+
+[EntregaFinal.sql](sql/EntregaFinal.sql)
+
+## Ejecución
+
+Crea una base de datos de pruebas en SQL Server y ejecuta el script sobre ella. El archivo incluye sentencias `DROP TABLE`, por lo que elimina las tablas existentes con esos nombres.
