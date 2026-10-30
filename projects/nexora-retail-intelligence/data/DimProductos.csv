@@ -1,0 +1,21 @@
+﻿ProductoID,Producto,Categoria,PrecioListaCRC,CostoUnitarioCRC
+P001,Audifonos BT,Tecnologia,18500,10500
+P002,Smartwatch,Tecnologia,46500,28000
+P003,Teclado,Tecnologia,12500,7200
+P004,Mouse inalambrico,Tecnologia,9900,5100
+P005,Parlante,Tecnologia,28500,16500
+P006,Cafetera,Hogar,43000,25800
+P007,Licuadora,Hogar,38000,22000
+P008,Lampara,Hogar,17500,9500
+P009,Ventilador,Hogar,29500,17700
+P010,Hervidor,Hogar,22500,13300
+P011,Silla ergonomica,Oficina,89000,53000
+P012,Cuaderno premium,Oficina,4900,2400
+P013,Organizador,Oficina,7900,3800
+P014,Monitor LED,Oficina,110000,73000
+P015,Base laptop,Oficina,19500,10200
+P016,Mochila,Accesorios,28000,15000
+P017,Botella termica,Accesorios,14900,7200
+P018,Bolso,Accesorios,19500,10800
+P019,Cable USB-C,Accesorios,6900,2750
+P020,Cargador,Accesorios,15900,7600

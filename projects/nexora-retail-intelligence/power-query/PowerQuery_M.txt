@@ -1,0 +1,42 @@
+// NEXORA — POWER QUERY (Editor avanzado)
+// 1) Crear parámetro de texto pRuta con la carpeta local descomprimida, por ejemplo C:\BI\NEXORA_BI\
+// 2) Crear UNA consulta EN BLANCO por bloque y nombrarla según el encabezado.
+// 3) Asegurar que pRuta termine en barra inversa en Windows.
+
+// CONSULTA: FactVentas
+let
+    Origen = Csv.Document(File.Contents(pRuta & "FactVentas_RAW.csv"),[Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+    Tipos = Table.TransformColumnTypes(Encabezados,{{"VentaID",type text},{"Fecha",type date},{"TiendaID",type text},{"ProductoID",type text},{"ClienteID",type text},{"Canal_RAW",type text},{"Cantidad",Int64.Type},{"PrecioUnitarioCRC",type number},{"CostoUnitarioCRC",type number},{"DescuentoPct",type number},{"Estado_RAW",type text}}, "en-US"),
+    Limpieza = Table.TransformColumns(Tipos,{{"Canal_RAW", each Text.Upper(Text.Trim(Text.Clean(_))),type text},{"Estado_RAW", each Text.Upper(Text.Trim(Text.Clean(_))),type text}}),
+    Canal = Table.TransformColumns(Limpieza,{{"Canal_RAW", each if _ = "ONLINE" then "Online" else if _ = "TIENDA FISICA" then "Tienda física" else if _ = "WHATSAPP" then "WhatsApp" else "Revisar",type text}}),
+    Estado = Table.TransformColumns(Canal,{{"Estado_RAW", each if _ = "COMPLETADO" then "Completado" else if _ = "DEVUELTO" then "Devuelto" else if _ = "CANCELADO" then "Cancelado" else "Revisar",type text}}),
+    Renombradas = Table.RenameColumns(Estado,{{"Canal_RAW","Canal"},{"Estado_RAW","Estado"}}),
+    VentaBruta = Table.AddColumn(Renombradas,"VentaBrutaCRC",each [Cantidad]*[PrecioUnitarioCRC],type number),
+    ValorOperacion = Table.AddColumn(VentaBruta,"VentaDespuesDescuentoCRC",each [VentaBrutaCRC]*(1-[DescuentoPct]/100),type number),
+    VentaNeta = Table.AddColumn(ValorOperacion,"VentaNetaCRC",each if [Estado]="Completado" then [VentaDespuesDescuentoCRC] else if [Estado]="Devuelto" then -[VentaDespuesDescuentoCRC] else 0,type number),
+    CostoNeto = Table.AddColumn(VentaNeta,"CostoNetoCRC",each if [Estado]="Completado" then [Cantidad]*[CostoUnitarioCRC] else if [Estado]="Devuelto" then -[Cantidad]*[CostoUnitarioCRC] else 0,type number),
+    Margen = Table.AddColumn(CostoNeto,"UtilidadCRC",each [VentaNetaCRC]-[CostoNetoCRC],type number),
+    Unicos = Table.Distinct(Margen,{"VentaID"})
+in Unicos
+
+// CONSULTA: DimProductos
+let
+ O=Csv.Document(File.Contents(pRuta & "DimProductos.csv"),[Delimiter=",",Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+ H=Table.PromoteHeaders(O,[PromoteAllScalars=true]),
+ T=Table.TransformColumnTypes(H,{{"ProductoID",type text},{"Producto",type text},{"Categoria",type text},{"PrecioListaCRC",type number},{"CostoUnitarioCRC",type number}},"en-US")
+in T
+
+// CONSULTA: DimTiendas
+let
+ O=Csv.Document(File.Contents(pRuta & "DimTiendas.csv"),[Delimiter=",",Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+ H=Table.PromoteHeaders(O,[PromoteAllScalars=true]),
+ T=Table.TransformColumnTypes(H,{{"TiendaID",type text},{"Tienda",type text},{"Provincia",type text},{"Region",type text}})
+in T
+
+// CONSULTA: FactMetas
+let
+ O=Csv.Document(File.Contents(pRuta & "FactMetasMensuales.csv"),[Delimiter=",",Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+ H=Table.PromoteHeaders(O,[PromoteAllScalars=true]),
+ T=Table.TransformColumnTypes(H,{{"YearMonth",type text},{"TiendaID",type text},{"MetaVentasCRC",type number}},"en-US")
+in T

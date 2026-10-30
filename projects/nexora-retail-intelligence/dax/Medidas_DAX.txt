@@ -1,0 +1,72 @@
+-- NEXORA — DAX. Copiar cada medida por separado (Modelado > Nueva medida).
+-- Primero crear DimFecha como TABLA CALCULADA, con la siguiente expresión:
+DimFecha =
+ADDCOLUMNS(
+    CALENDAR(MIN(FactVentas[Fecha]),MAX(FactVentas[Fecha])),
+    "Año",YEAR([Date]),
+    "MesNumero",MONTH([Date]),
+    "Mes",FORMAT([Date],"MMM"),
+    "YearMonth",FORMAT([Date],"yyyy-MM"),
+    "Trimestre","T"&FORMAT([Date],"Q")
+)
+-- Marcar DimFecha como tabla de fechas por [Date], ordenar [Mes] por [MesNumero].
+-- Relaciones: DimFecha[Date] 1:* FactVentas[Fecha]
+-- DimProductos[ProductoID] 1:* FactVentas[ProductoID]
+-- DimTiendas[TiendaID] 1:* FactVentas[TiendaID]
+-- DimTiendas[TiendaID] 1:* FactMetas[TiendaID]
+-- NO relacionar FactMetas[YearMonth] directamente con DimFecha[YearMonth] (no es único).
+
+Ventas Netas CRC = SUM(FactVentas[VentaNetaCRC])
+
+Ventas Brutas CRC =
+CALCULATE(SUM(FactVentas[VentaBrutaCRC]), FactVentas[Estado] = "Completado")
+
+Costo Neto CRC = SUM(FactVentas[CostoNetoCRC])
+
+Utilidad CRC = [Ventas Netas CRC] - [Costo Neto CRC]
+
+Margen % = DIVIDE([Utilidad CRC], [Ventas Netas CRC])
+
+Pedidos Completados = CALCULATE(DISTINCTCOUNT(FactVentas[VentaID]), FactVentas[Estado]="Completado")
+
+Pedidos Devueltos = CALCULATE(DISTINCTCOUNT(FactVentas[VentaID]), FactVentas[Estado]="Devuelto")
+
+Pedidos Procesados =
+CALCULATE(DISTINCTCOUNT(FactVentas[VentaID]), FactVentas[Estado] IN {"Completado","Devuelto"})
+
+Tasa Devolucion % = DIVIDE([Pedidos Devueltos],[Pedidos Procesados])
+
+Ticket Promedio CRC =
+DIVIDE(CALCULATE(SUM(FactVentas[VentaDespuesDescuentoCRC]),FactVentas[Estado]="Completado"),[Pedidos Completados])
+
+Clientes Unicos =
+CALCULATE(DISTINCTCOUNT(FactVentas[ClienteID]),FactVentas[Estado]="Completado")
+
+Ventas LY CRC =
+CALCULATE([Ventas Netas CRC], SAMEPERIODLASTYEAR(DimFecha[Date]))
+
+Crecimiento YoY % = DIVIDE([Ventas Netas CRC]-[Ventas LY CRC],[Ventas LY CRC])
+
+Meta Ventas CRC =
+CALCULATE(
+    SUM(FactMetas[MetaVentasCRC]),
+    TREATAS(VALUES(DimFecha[YearMonth]), FactMetas[YearMonth])
+)
+
+Cumplimiento Meta % = DIVIDE([Ventas Netas CRC],[Meta Ventas CRC])
+
+Brecha Meta CRC = [Ventas Netas CRC] - [Meta Ventas CRC]
+
+Participacion Ventas % =
+DIVIDE([Ventas Netas CRC], CALCULATE([Ventas Netas CRC],ALLSELECTED(DimProductos[Categoria])))
+
+-- MEDIDAS ÚTILES PARA ALERTAS / NARRATIVA
+Alerta Comercial =
+SWITCH(TRUE(),[Margen %] < 0.25,"Revisar margen",
+             [Tasa Devolucion %] > 0.08,"Revisar devoluciones",
+             [Cumplimiento Meta %] < 0.85,"Bajo objetivo",
+             "Operación estable")
+
+-- Formato recomendado: CRC sin decimales para importes; porcentaje con 1 decimal en ratios.
+-- IMPORTANTE: las devoluciones aparecen con signo negativo en Ventas Netas y Costo Neto.
+-- Supuesto del proyecto: cada registro equivale a un pedido de un solo producto y tienda.

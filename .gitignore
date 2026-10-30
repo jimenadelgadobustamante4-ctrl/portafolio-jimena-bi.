@@ -1,0 +1,11 @@
+*.pbix~
+*.pbit~
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+.next/
+__pycache__/
+.DS_Store
+Thumbs.db
